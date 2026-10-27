@@ -1,0 +1,47 @@
+{
+  "name": "@local/ptc-model-check",
+  "version": "2.29.0",
+  "private": true,
+  "description": "场景建模特调：让 DeepSeek v4.1 (1017) 在场景建模上产出作品级结果——完整、耐看、可直接交付。",
+  "type": "module",
+  "main": "./lib/index.js",
+  "scripts": {
+    "test": "node tests/run_offline.mjs"
+  },
+  "exports": {
+    ".": "./lib/index.js",
+    "./package.json": "./package.json",
+    "./icon": "./icon.svg"
+  },
+  "files": [
+    "lib",
+    "runtime",
+    "scripts/research.mjs",
+    "cordis.patch.yml",
+    "icon.svg",
+    "LICENSE",
+    "CHANGELOG.md",
+    "README.md",
+    "docs/install-blender-mcp.md"
+  ],
+  "engines": {
+    "node": ">=22"
+  },
+  "dsh": {
+    "bundle": {
+      "patch": "./cordis.patch.yml"
+    }
+  },
+  "peerDependencies": {
+    "@deepseek-ai/dsh-tools": ">=0.2.0-rc <2"
+  },
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/panda472328/ptc-model-check.git"
+  },
+  "bugs": {
+    "url": "https://github.com/panda472328/ptc-model-check/issues"
+  },
+  "homepage": "https://github.com/panda472328/ptc-model-check#readme"
+}

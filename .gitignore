@@ -1,0 +1,7 @@
+node_modules/
+*.log
+.DS_Store
+*.blend1
+__pycache__/
+*.pyc
+.dsh-tmp/

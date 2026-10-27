@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64">
+  <defs>
+    <linearGradient id="g" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#7de2c3"/>
+      <stop offset="1" stop-color="#3f9fd6"/>
+    </linearGradient>
+  </defs>
+  <rect x="2" y="2" width="60" height="60" rx="14" fill="#10141c"/>
+  <!-- 立方体线框：建模对象 -->
+  <path d="M32 12 L48 21 L48 41 L32 50 L16 41 L16 21 Z"
+        fill="none" stroke="#8fb6ff" stroke-width="2" stroke-linejoin="round"/>
+  <path d="M32 12 L32 31 M16 21 L32 31 L48 21 M32 31 L32 50"
+        fill="none" stroke="#8fb6ff" stroke-width="1.6" stroke-linecap="round" opacity=".75"/>
+  <!-- 对勾：几何检查通过 -->
+  <path d="M22 34 L29 41 L44 25" fill="none" stroke="url(#g)" stroke-width="4.2"
+        stroke-linecap="round" stroke-linejoin="round"/>
+</svg>
