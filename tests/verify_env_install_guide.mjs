@@ -194,6 +194,23 @@ console.log('\n=== 9. 第①层缺失：服务器在线但没注册进 DSH（建
   assert.match(txt, /blender -b|无头/, '要点名无头实例这条路')
   assert.match(txt, /零?没有做过任何几何检查|等于没有做过任何几何检查/, '必须说清后果')
   console.log('  ✓ 未注册压过 ok 分支，且禁止无头绕过')
+
+  /* 只发一个包时，接收方的 AI 得能自己补齐第③层。
+   * 它猜不出来的两件事必须直接给：安装文档绝对路径、当前 profile 绝对路径。 */
+  const txt2 = buildStateText({
+    ...stateWith({ ...online, nativeMissing: true, deniedCount: 1 }),
+    installDocPath: 'D:\\profiles\\p1\\node_modules\\@local\\ptc-model-check\\docs\\install-blender-mcp.md',
+    profileDir: 'D:\\profiles\\p1',
+  })
+  assert.match(txt2, /安装文档（绝对路径）：/, '必须给安装文档的绝对路径')
+  assert.match(txt2, /当前 profile：D:\\profiles\\p1/, '必须给当前 profile 的绝对路径')
+  assert.match(txt2, /没有 plugin_manager 工具/, '必须说明本模式拿不到 plugin_manager')
+  assert.match(txt2, /plugin --profile p1 add file:/, '必须给出可执行的 CLI 安装命令（带真实 profile 名）')
+  assert.match(txt2, /dsh\.profile\.bundles/, '要说明 CLI 会自动登记 bundle')
+  assert.match(txt2, /releases\/latest\/download\/blender-mcp-1\.2\.3\.zip/, '要给可直接下载的直链')
+  assert.doesNotMatch(txt2, /pnpm install/, '不能让自己装的人去跑 pnpm（陌生机器上没有）')
+  assert.doesNotMatch(txt2, /[^\\]docs\/install-blender-mcp\.md/, '给了绝对路径就不该再出现相对路径')
+  console.log('  ✓ 缺第③层时给出绝对路径与自装步骤（含 profile 与 bundles 登记）')
 }
 
 console.log('\n=== 10. isNativeToolMissing：只由真实失败置位 ===')

@@ -47,7 +47,7 @@
 
 ## 怎么用
 
-2.29.0 修复「探测全绿但建模通道不存在」，并新增看图即检测：
+2.29.1 让「只发一个包」也能自助装好（绝对路径 + CLI 命令，不依赖系统 pnpm）。2.29.0 修复「探测全绿但建模通道不存在」，并新增看图即检测：
 
 - **环境自检分四层判定**：Blender、addon、blender-mcp bundle（DSH 侧注册）、MCP 服务器进程。此前只探后两层，导致 `mcp__blender__*` 根本不存在时状态仍显示「已就绪」。现在本会话若调用原生工具被 DSH 拒绝，状态会明确报「MCP 服务器可达，但没接进 DSH」并给出安装入口，不再让模型误以为可以自己开无头 Blender 绕过去（真实后果：建模测试 28 全程零几何检查）。
 - **服务器脚本自动发现**：`mcpServerScript` 留空时按环境变量、同级包、profile `node_modules` 逐级找 `src/server.mjs`；显式配置的路径不存在时直接报错，不会静默改用另一份脚本。原先后备的含糊 `action:'none'` 拆成 `mcp-script-missing` 与 `mcp-offline`。
@@ -219,14 +219,14 @@ npm test
 
 ```bash
 npm test                                   # 43 项全绿才发
-git tag v2.29.0 && git push origin v2.29.0
-git archive --format=zip -o ptc-model-check-2.29.0.zip HEAD
+git tag v2.29.1 && git push origin v2.29.1
+git archive --format=zip -o ptc-model-check-2.29.1.zip HEAD
 ```
 
-然后打开 `https://github.com/panda472328/dsh-ptc-model-check/releases/new?tag=v2.29.0`，上传 zip 作附件。装了 `gh` 的话等价一条：
+然后打开 `https://github.com/panda472328/dsh-ptc-model-check/releases/new?tag=v2.29.1`，上传 zip 作附件。装了 `gh` 的话等价一条：
 
 ```bash
-gh release create v2.29.0 ptc-model-check-2.29.0.zip --title "v2.29.0" --notes-file CHANGELOG.md
+gh release create v2.29.1 ptc-model-check-2.29.1.zip --title "v2.29.1" --notes-file CHANGELOG.md
 ```
 
 配套包同理，附件名 `blender-mcp-1.2.3.zip`。

@@ -116,33 +116,41 @@ which blender
 
 取各自的 `blender-mcp-<版本>.zip` 与 `ptc-model-check-<版本>.zip`（latest）。国内网络拉 GitHub 慢时可用镜像前缀（如 `https://ghproxy.net/` + 原地址），但**装完必须按 §5 核对版本号**。
 
-### 2.2 安装方式（三选一，按顺序尝试）
+### 2.2 安装方式（按顺序尝试，A 最省事）
 
-**方式 A（推荐）：让 DSH 自己装。** 在普通会话里对 AI 说：
-
-> 用 plugin_manager 安装 <解包目录的绝对路径> 这个 bundle
-
-或在 设置 → 插件管理 → 安装插件 里选解包目录。它会写进 profile 的 `package.json`（dependencies + `dsh.profile.bundles`）并安装。已发布到 GitHub 后也可以直接装仓库依赖形式：`"@local/blender-mcp": "github:panda472328/dsh-blender-mcp"`。
-
-**方式 B：手工写 profile**（A 不可用时）。profile 目录 = 环境变量 `DSH_PROFILE_DIR`（本机实例是 `D:\DSHData\profiles\desktop`）。编辑该目录的 `package.json`：
+**方式 A（推荐）：一行 CLI 命令。** DSH 自带命令行，内含 pnpm，**不需要系统装 pnpm**：
 
 ```powershell
-# 1) 解压到固定位置
-$zip = "$env:TEMP\blender-mcp.zip"
-Invoke-WebRequest -Uri 'https://github.com/panda472328/dsh-blender-mcp/releases/latest/download/blender-mcp-1.2.3.zip' -OutFile $zip
-$dst = Join-Path $env:DSH_PROFILE_DIR 'pkgs\blender-mcp'
-New-Item -ItemType Directory -Force -Path $dst | Out-Null
-Expand-Archive -Path $zip -DestinationPath $dst -Force
-
-# 2) 编辑 <DSH_PROFILE_DIR>\package.json：
-#    dependencies 里加：  "@local/blender-mcp": "link:./pkgs/blender-mcp"
-#    dsh.profile.bundles 数组里加："@local/blender-mcp"
-# 3) 在 profile 目录执行安装
-Set-Location $env:DSH_PROFILE_DIR
-pnpm install --ignore-scripts
+# 1) 解压
+Expand-Archive -Path "$env:TEMP\blender-mcp.zip" -DestinationPath "$env:TEMP\blender-mcp" -Force
+# 2) 装进 profile（自动写 dependencies 与 dsh.profile.bundles）
+& "<DSH 安装目录>\resources\runtime\cli\bin\dsh.cmd" plugin --profile <profile名> add file:"$env:TEMP\blender-mcp\blender-mcp-1.2.3"
 ```
 
-**方式 C：开发者 link**（源码已在本机，如 `git clone` 场景）：dependencies 写 `"@local/blender-mcp": "link:D:/绝对路径/blender-mcp"`，其余同 B。
+`<DSH 安装目录>` = `DeepSeek Harness.exe` 所在目录（例如 `D:\dsh`）；`<profile名>` = `DSH_PROFILE_DIR` 的最后一段（`D:\DSHData\profiles\desktop` → `desktop`）。
+
+实测（全新 profile）：这条命令会把包加进 `dependencies`，**并自动登记到 `dsh.profile.bundles`** —— 后者是手工方式最容易漏的一步，漏了等于没装。
+
+**方式 B：图形界面。** 设置 → 插件管理 → 安装插件 → 选解包目录，等价于 A。注意：**建模模式里 `plugin_manager` 工具是 disabled 的**，所以要让 AI 自己装，只能走 A 的 CLI —— 运行时状态会直接把这条命令连同 profile 名一起给它。
+
+**方式 C：手工写 profile**（前两者都不可用时）。profile 目录 = 环境变量 `DSH_PROFILE_DIR`。解压到该目录的 `pkgs\blender-mcp`，然后编辑 `package.json`：
+
+```json
+"dependencies": { "@local/blender-mcp": "link:./pkgs/blender-mcp" },
+"dsh": { "profile": { "bundles": [
+  "@deepseek-ai/dsh-base", "@deepseek-ai/dsh-web-app", "@local/blender-mcp"
+] } }
+```
+
+再在 profile 目录执行：
+
+```powershell
+& "<DSH 安装目录>\resources\runtime\cli\bin\dsh.cmd" plugin --profile <profile名> install
+```
+
+它同样调用 DSH 自带的 pnpm —— **不要依赖系统的 `pnpm` 命令，普通机器上没有**（实测干净环境 `Get-Command pnpm` 直接报缺失，照文档写 `pnpm install` 会失败）。
+
+**方式 D：开发者 link**（源码已在本机，如 `git clone` 场景）：dependencies 写 `"@local/blender-mcp": "link:D:/绝对路径/blender-mcp"`，其余同 C。
 
 ### 2.3 重启
 

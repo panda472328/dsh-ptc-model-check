@@ -1,5 +1,10 @@
 # 更新记录
 
+## 2.29.1
+
+- **只发建模包时，接收方的 AI 能自己补齐第③层**：运行时上下文现在给出安装文档的**绝对路径**、当前 profile 的绝对路径，以及可直接执行的安装命令 `dsh plugin --profile <名> add file:<解压目录>`；并明确说明建模模式没有 `plugin_manager` 工具，别去用。
+- **安装文档改为 CLI 优先**：实测干净机器上 `Get-Command pnpm` 直接缺失，原「方式 B」里的 `pnpm install` 会失败。DSH 自带 CLI 内含 pnpm，且 `dsh plugin ... add` 会自动登记 `dsh.profile.bundles`（手工方式最容易漏的一步）。
+- 回归补断言：绝对文档路径、CLI 命令带真实 profile 名、Release 直链、全文不许出现 `pnpm install`。
 ## 2.29.0
 
 修复「环境探测全绿、建模通道却不存在」，并新增看图即检测。
