@@ -1,10 +1,10 @@
-# ptc-model-check · 场景建模模式
+# ptc-model-check
 
-场景建模特调。为 DeepSeek v4.1 (1017) 深度调优的独立 DSH 模式，把最高的推理与上下文预算花在造型、材质和构图上。
+一个独立的 DSH agent preset，为 3D 建模提供 11 个 native 工具，覆盖环境自检、部件命名、几何检查、视觉复核、参考调研、分组和删除审计。
 
-选它开一个会话，你要的不是一个「能跑通」的模型，而是一件作品：结构站得住，多视角经得起看，整体达到可交付的美术完成度。
+插件及流程说明注册在 preset 作用域里。只有选择该模式（DSH 里显示为「场景建模模式」）的会话会加载这些工具与建模流程上下文。
 
-配套 [blender-mcp](https://github.com/panda472328/dsh-blender-mcp) 让它真正看见并改动 Blender 场景。两个包成对使用——只装本包时，模式会退化成看不见场景的文本助手。
+配套 [blender-mcp](https://github.com/panda472328/dsh-blender-mcp) 提供 Blender 通道，两个包成对使用。
 
 ## 安装（新用户先看这一节）
 
