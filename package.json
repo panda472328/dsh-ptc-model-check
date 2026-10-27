@@ -38,10 +38,10 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/panda472328/ptc-model-check.git"
+    "url": "git+https://github.com/panda472328/dsh-ptc-model-check.git"
   },
   "bugs": {
-    "url": "https://github.com/panda472328/ptc-model-check/issues"
+    "url": "https://github.com/panda472328/dsh-ptc-model-check/issues"
   },
-  "homepage": "https://github.com/panda472328/ptc-model-check#readme"
+  "homepage": "https://github.com/panda472328/dsh-ptc-model-check#readme"
 }

@@ -111,8 +111,8 @@ which blender
 
 | 包 | Release 地址 |
 |---|---|
-| 建模插件（本包） | <https://github.com/panda472328/ptc-model-check/releases> |
-| MCP 配套包 | <https://github.com/panda472328/blender-mcp/releases> |
+| 建模插件（本包） | <https://github.com/panda472328/dsh-ptc-model-check/releases> |
+| MCP 配套包 | <https://github.com/panda472328/dsh-blender-mcp/releases> |
 
 取各自的 `blender-mcp-<版本>.zip` 与 `ptc-model-check-<版本>.zip`（latest）。国内网络拉 GitHub 慢时可用镜像前缀（如 `https://ghproxy.net/` + 原地址），但**装完必须按 §5 核对版本号**。
 
@@ -122,14 +122,14 @@ which blender
 
 > 用 plugin_manager 安装 <解包目录的绝对路径> 这个 bundle
 
-或在 设置 → 插件管理 → 安装插件 里选解包目录。它会写进 profile 的 `package.json`（dependencies + `dsh.profile.bundles`）并安装。已发布到 GitHub 后也可以直接装仓库依赖形式：`"@local/blender-mcp": "github:panda472328/blender-mcp"`。
+或在 设置 → 插件管理 → 安装插件 里选解包目录。它会写进 profile 的 `package.json`（dependencies + `dsh.profile.bundles`）并安装。已发布到 GitHub 后也可以直接装仓库依赖形式：`"@local/blender-mcp": "github:panda472328/dsh-blender-mcp"`。
 
 **方式 B：手工写 profile**（A 不可用时）。profile 目录 = 环境变量 `DSH_PROFILE_DIR`（本机实例是 `D:\DSHData\profiles\desktop`）。编辑该目录的 `package.json`：
 
 ```powershell
 # 1) 解压到固定位置
 $zip = "$env:TEMP\blender-mcp.zip"
-Invoke-WebRequest -Uri 'https://github.com/panda472328/blender-mcp/releases/latest/download/blender-mcp-1.2.3.zip' -OutFile $zip
+Invoke-WebRequest -Uri 'https://github.com/panda472328/dsh-blender-mcp/releases/latest/download/blender-mcp-1.2.3.zip' -OutFile $zip
 $dst = Join-Path $env:DSH_PROFILE_DIR 'pkgs\blender-mcp'
 New-Item -ItemType Directory -Force -Path $dst | Out-Null
 Expand-Archive -Path $zip -DestinationPath $dst -Force
@@ -186,7 +186,7 @@ Get-ChildItem 'D:\','C:\' -Recurse -Depth 4 -Filter blender_mcp.py -ErrorAction 
   Where-Object { $_.FullName -match '\\addon\\' } | Select-Object -First 5 FullName
 ```
 
-**找不到就按 §2 装 bundle**（addon 就在包里）。没有网络时让用户从 <https://github.com/panda472328/blender-mcp> 的 Release 下载 zip；不要用网上同名项目替代，也不要自己写一个凑合。
+**找不到就按 §2 装 bundle**（addon 就在包里）。没有网络时让用户从 <https://github.com/panda472328/dsh-blender-mcp> 的 Release 下载 zip；不要用网上同名项目替代，也不要自己写一个凑合。
 
 拿到后先核对版本，避免装旧版：
 

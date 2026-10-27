@@ -4,7 +4,7 @@
 
 选它开一个会话，你要的不是一个「能跑通」的模型，而是一件作品：结构站得住，多视角经得起看，整体达到可交付的美术完成度。
 
-配套 [blender-mcp](https://github.com/panda472328/blender-mcp) 让它真正看见并改动 Blender 场景。两个包成对使用——只装本包时，模式会退化成看不见场景的文本助手。
+配套 [blender-mcp](https://github.com/panda472328/dsh-blender-mcp) 让它真正看见并改动 Blender 场景。两个包成对使用——只装本包时，模式会退化成看不见场景的文本助手。
 
 ## 安装（新用户先看这一节）
 
@@ -14,10 +14,10 @@
 |---|---|---|
 | ① | **Blender 4.2+** | <https://www.blender.org/download/> |
 | ② | **addon** `blender_mcp.py`（在 Blender 里开 9876 socket） | 随 ③ 的包分发 |
-| ③ | **blender-mcp bundle**（把服务器注册成 DSH 的 `mcp__blender__*` 工具） | <https://github.com/panda472328/blender-mcp/releases> |
+| ③ | **blender-mcp bundle**（把服务器注册成 DSH 的 `mcp__blender__*` 工具） | <https://github.com/panda472328/dsh-blender-mcp/releases> |
 | ④ | **MCP 服务器进程**（8765，`node src/server.mjs`） | 同 ③，插件可自动拉起 |
 
-本包安装：<https://github.com/panda472328/ptc-model-check/releases> 下载 zip，解压后用 DSH 的插件管理安装，或把目录交给 AI 让它用 `plugin_manager` 安装。
+本包安装：<https://github.com/panda472328/dsh-ptc-model-check/releases> 下载 zip，解压后用 DSH 的插件管理安装，或把目录交给 AI 让它用 `plugin_manager` 安装。
 
 ⚠️ **③ 最容易漏，也最阴**：没有它，服务器照样能起、探测全绿、环境显示「已就绪」，但建模工具列表里一个 `mcp__blender__*` 都没有。真实后果见安装文档开头的案例（一次建模全程零几何检查）。
 
@@ -210,8 +210,8 @@ npm test
 
 | 仓库 | 内容 | Release zip |
 |---|---|---|
-| <https://github.com/panda472328/ptc-model-check> | 本包：preset、11 个工具、检查引擎 | `ptc-model-check-<ver>.zip` |
-| <https://github.com/panda472328/blender-mcp> | MCP 服务器（Node）、addon、DSH 注册 patch | `blender-mcp-<ver>.zip` |
+| <https://github.com/panda472328/dsh-ptc-model-check> | 本包：preset、11 个工具、检查引擎 | `ptc-model-check-<ver>.zip` |
+| <https://github.com/panda472328/dsh-blender-mcp> | MCP 服务器（Node）、addon、DSH 注册 patch | `blender-mcp-<ver>.zip` |
 
 **两个必须都发**：只发本包，用户装完仍然没有 `mcp__blender__*`（就是建模测试 27/28 的故障）。文档与插件状态文本里的下载地址写死了 `panda472328/<仓库名>/releases`，改名或换 owner 要同步 `docs/install-blender-mcp.md` §2 和 `lib/index.js` 的强制提示。
 
@@ -223,7 +223,7 @@ git tag v2.29.0 && git push origin v2.29.0
 git archive --format=zip -o ptc-model-check-2.29.0.zip HEAD
 ```
 
-然后打开 `https://github.com/panda472328/ptc-model-check/releases/new?tag=v2.29.0`，上传 zip 作附件。装了 `gh` 的话等价一条：
+然后打开 `https://github.com/panda472328/dsh-ptc-model-check/releases/new?tag=v2.29.0`，上传 zip 作附件。装了 `gh` 的话等价一条：
 
 ```bash
 gh release create v2.29.0 ptc-model-check-2.29.0.zip --title "v2.29.0" --notes-file CHANGELOG.md

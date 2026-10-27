@@ -160,7 +160,7 @@ assert.match(doc, /start-server\.bat/, '必须给出真实启动脚本')
 assert.match(doc, /src\\server\.mjs|src\/server\.mjs/, '必须指明 Node 入口')
 assert.doesNotMatch(doc, /python -m blender_mcp\.server/, '不许写不存在的 Python 入口')
 /* GitHub 地址必须写死；profile 路径要能从环境变量取 */
-for (const url of ['github.com/panda472328/blender-mcp', 'github.com/panda472328/ptc-model-check']) {
+for (const url of ['github.com/panda472328/dsh-blender-mcp', 'github.com/panda472328/dsh-ptc-model-check']) {
   assert.ok(doc.includes(url), '文档必须给出地址：' + url)
 }
 assert.match(doc, /DSH_PROFILE_DIR/, 'profile 路径必须用环境变量，不能写死某台机器')
@@ -188,7 +188,7 @@ console.log('\n=== 9. 第①层缺失：服务器在线但没注册进 DSH（建
   assert.match(txt, /MCP 服务器可达，但没接进 DSH/, '必须直说未注册')
   assert.match(txt, /被拒绝 3 次/, '要给事实，不给套话')
   assert.doesNotMatch(txt, /Blender 环境：\*\*已就绪\*\*/, '服务器在线绝不能报已就绪')
-  assert.match(txt, /panda472328\/blender-mcp\/releases/, '要给出 bundle 下载地址')
+  assert.match(txt, /panda472328\/dsh-blender-mcp\/releases/, '要给出 bundle 下载地址')
   /* 反绕过：28 的失败方式就是 pwsh 起无头 Blender */
   assert.match(txt, /禁止绕过/, '必须禁止绕过注册')
   assert.match(txt, /blender -b|无头/, '要点名无头实例这条路')
