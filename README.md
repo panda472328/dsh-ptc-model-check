@@ -47,13 +47,13 @@
 
 ## 怎么用
 
-2.29.1 让「只发一个包」也能自助装好（绝对路径 + CLI 命令，不依赖系统 pnpm）。2.29.0 修复「探测全绿但建模通道不存在」，并新增看图即检测：
+2.30.0 修「MCP 客户端断连却报就绪」并堵死自建 socket 桥；2.29.1 让「只发一个包」也能自助装好（绝对路径 + CLI 命令，不依赖系统 pnpm）。2.29.0 修复「探测全绿但建模通道不存在」，并新增看图即检测：
 
 - **环境自检分四层判定**：Blender、addon、blender-mcp bundle（DSH 侧注册）、MCP 服务器进程。此前只探后两层，导致 `mcp__blender__*` 根本不存在时状态仍显示「已就绪」。现在本会话若调用原生工具被 DSH 拒绝，状态会明确报「MCP 服务器可达，但没接进 DSH」并给出安装入口，不再让模型误以为可以自己开无头 Blender 绕过去（真实后果：建模测试 28 全程零几何检查）。
 - **服务器脚本自动发现**：`mcpServerScript` 留空时按环境变量、同级包、profile `node_modules` 逐级找 `src/server.mjs`；显式配置的路径不存在时直接报错，不会静默改用另一份脚本。原先后备的含糊 `action:'none'` 拆成 `mcp-script-missing` 与 `mcp-offline`。
 - **看图即检测**：`look` / `render_preview` 的结果后自动追加穿模与孤立摘要（与 `model_isolation` 同源同阈值），由 `tools/post-execute` 完成，只替换 `content`，全程 try/catch 加超时，检测失败绝不影响看图。配置项 `viewCheck`、`viewCheckItems`、`viewCheckTimeoutMs`。
 - **安装文档按需强制**：环境齐全时上下文不出现文档；缺任意一层时才给出 `docs/install-blender-mcp.md` 路径与强制阅读指令。文档按四层依赖重写，含 GitHub 下载地址、bundle 注册步骤、addon 单文件落位、七项验收。
-- 离线回归 43 项，新增 `verify_view_checks`、`verify_env_install_guide` 与 `verify_framing_focus`（后者用 `new Function` 抽取真实的 `buildStateText` 执行，验证「就绪时不提文档、缺环境时必提」）。
+- 离线回归 44 项，新增 `verify_view_checks`、`verify_env_install_guide` 与 `verify_framing_focus`（后者用 `new Function` 抽取真实的 `buildStateText` 执行，验证「就绪时不提文档、缺环境时必提」）。
 
 2.28.0 将整体场景构想提前到开工，并修复材质复核出图：
 
@@ -198,11 +198,11 @@ scripts/research.mjs  结构参考联网检索脚本（运行时使用）
 ## 自测
 
 ```bash
-# 43 项离线回归，不连接 Blender、不创建真实子代理
+# 44 项离线回归，不连接 Blender、不创建真实子代理
 npm test
 ```
 
-离线回归覆盖实际宿主上下文注入、脚本编辑与导出状态、局部签收、自查/独立复核、多组待办、两层几何检查、场景意图、真实材质渲染请求、源选择、调研、无损 JSON、看图即检测和环境安装引导，共 43 项。`tests/run_offline.mjs` 显式列出这些脚本，避免运行会重建活动场景的现场测试。配套 MCP 可在其目录执行 `npm test` 验证脚本通道及 52→12 工具筛选，`python tests/verify_render_cleanup.py` 验证预览环境恢复。
+离线回归覆盖实际宿主上下文注入、脚本编辑与导出状态、局部签收、自查/独立复核、多组待办、两层几何检查、场景意图、真实材质渲染请求、源选择、调研、无损 JSON、看图即检测和环境安装引导，共 44 项。`tests/run_offline.mjs` 显式列出这些脚本，避免运行会重建活动场景的现场测试。配套 MCP 可在其目录执行 `npm test` 验证脚本通道及 52→12 工具筛选，`python tests/verify_render_cleanup.py` 验证预览环境恢复。
 
 真实 Blender、DSH 加载与导出文件仍需更新后另做实机验证。
 
@@ -218,7 +218,7 @@ npm test
 发版流程（以本包为例；本机没装 `gh`，用网页上传附件）：
 
 ```bash
-npm test                                   # 43 项全绿才发
+npm test                                   # 44 项全绿才发
 git tag v2.29.1 && git push origin v2.29.1
 git archive --format=zip -o ptc-model-check-2.29.1.zip HEAD
 ```
@@ -229,9 +229,9 @@ git archive --format=zip -o ptc-model-check-2.29.1.zip HEAD
 gh release create v2.29.1 ptc-model-check-2.29.1.zip --title "v2.29.1" --notes-file CHANGELOG.md
 ```
 
-配套包同理，附件名 `blender-mcp-1.2.3.zip`。
+配套包同理，附件名 `blender-mcp-1.2.4.zip`。
 
-附件名要和文档 §2.1 的下载 URL 对得上（文档用 `releases/latest/download/blender-mcp-1.2.3.zip` 这类直链，升版时记得同步）。
+附件名要和文档 §2.1 的下载 URL 对得上（文档用 `releases/latest/download/blender-mcp-1.2.4.zip` 这类直链，升版时记得同步）。
 
 ## 实现要点
 

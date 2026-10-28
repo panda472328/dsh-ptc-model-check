@@ -1,3 +1,13 @@
+# 启动期监督：先把 MCP 服务器拉起来，保证 mcp-client 的初次连接就能成功。
+# 为什么必须放在 profile 层：预设只在「创建建模会话」时才加载，而 mcp-client
+# 在 DSH 启动时就去连 8765——服务器晚到会让它长期停在 disconnected
+# （建模测试 32 的真实故障：探测全绿、状态报就绪、工具却一个都调不动）。
+- insert:
+    - id: ptc-blender-supervisor
+      name: '@local/ptc-model-check/supervisor'
+      config:
+        mcpPort: 8765
+        blenderPort: 9876
 # Agent preset ptc: one `@deepseek-ai/dsh-agent-preset` declaration inserted
 # after the web patch. Edits saved from the Web editor override this row's
 # `config.plugins` by id from the profile patch.

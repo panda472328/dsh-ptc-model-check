@@ -207,7 +207,7 @@ console.log('\n=== 9. 第①层缺失：服务器在线但没注册进 DSH（建
   assert.match(txt2, /没有 plugin_manager 工具/, '必须说明本模式拿不到 plugin_manager')
   assert.match(txt2, /plugin --profile p1 add file:/, '必须给出可执行的 CLI 安装命令（带真实 profile 名）')
   assert.match(txt2, /dsh\.profile\.bundles/, '要说明 CLI 会自动登记 bundle')
-  assert.match(txt2, /releases\/latest\/download\/blender-mcp-1\.2\.3\.zip/, '要给可直接下载的直链')
+  assert.match(txt2, /releases\/latest\/download\/blender-mcp-1\.2\.4\.zip/, '要给可直接下载的直链')
   assert.doesNotMatch(txt2, /pnpm install/, '不能让自己装的人去跑 pnpm（陌生机器上没有）')
   assert.doesNotMatch(txt2, /[^\\]docs\/install-blender-mcp\.md/, '给了绝对路径就不该再出现相对路径')
   console.log('  ✓ 缺第③层时给出绝对路径与自装步骤（含 profile 与 bundles 登记）')

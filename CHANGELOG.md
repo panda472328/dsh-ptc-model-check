@@ -1,5 +1,29 @@
 # 更新记录
 
+## 2.30.0
+
+### 修复：MCP 客户端断连时仍报「就绪」，模型自建 socket 桥绕过全部检查
+
+真实故障（建模测试 32）：DSH 启动时 MCP 服务器还没起，`mcp-client` 首次连接失败后停在
+`server is disconnected`；随后插件把服务器拉起、自检报「就绪 ✓ 12 个工具」，可工具一个都调不动。
+模型于是自己写 `bpy_send.py` 直连 addon 的 9876 端口，146 次工具调用里 **0 次 `mcp__blender__*`、
+0 次 `model_loop`** —— 几何检查、看图检测、五视图、签收门禁全部失效。
+
+- **断连识别**：`isMcpClientDisconnected()` 认 `mcp-client(<name>): server is disconnected`，
+  不限定工具名（模型常先用资源工具探到）。新状态 `mcp-client-disconnected` 优先于就绪，
+  `blender_ready` 的 `ready` 也会因此为假。
+- **状态文本**说清三件事：症状（链路断，不是没装）、唯一解法（**完全退出 DSH 再启动**，重装无效）、
+  禁止搭桥（点名 9876 / 8765）。
+- **硬拦截**：新增 `lib/core/bridge-guard.mjs`，在 `tools/pre-execute` 拒绝「连接代码 + 9876/8765」
+  的 pwsh / bash / write / edit。只拦真搭桥：探端口、读源码、写文档都不拦。
+- **启动期监督**（根因修复）：新增 profile 层插件 `@local/ptc-model-check/supervisor`，
+  DSH 启动时就拉起服务器、等端口监听后再放行，让 `mcp-client` 的初次连接成功。
+- 配套包 `blender-mcp` 重连放宽（30 次 → 100000 次，间隔上限 30s → 5s），第二道保险。
+
+### 测试
+
+- 新增 `verify_bridge_guard`（6 段）：断连识别、分类优先级、状态文案、搭桥拦截（5 拦 5 放）、
+  监督接线、重连配置。44 项离线回归全绿。
 ## 2.29.1
 
 - **只发建模包时，接收方的 AI 能自己补齐第③层**：运行时上下文现在给出安装文档的**绝对路径**、当前 profile 的绝对路径，以及可直接执行的安装命令 `dsh plugin --profile <名> add file:<解压目录>`；并明确说明建模模式没有 `plugin_manager` 工具，别去用。

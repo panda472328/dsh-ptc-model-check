@@ -33,6 +33,7 @@
 | `MCP 服务器离线，且自动启动已关闭` | ④ | §4 |
 | `Blender 已装，但 addon 没在监听端口` | ② 或 ④ | §3 → §4 |
 | `插件检查端点与 DSH 原生建模端点不一致` | 配置 | §4.3 |
+| `MCP 服务器在线，但 DSH 的 MCP 客户端已断连` | 不是缺件，是**连接断了** | **完全退出 DSH 再启动**（重装无效） |
 | `已就绪` | 都不缺 | 关掉本文档，开始建模 |
 
 判定永远以**实际探测结果**为准，不要因为「用户说装过了」就跳过验证。特别注意：**探测到 8765 在线不代表 ③ 已经装好**——必须按 §5 第 ⑦ 项确认工具真的存在。
@@ -124,7 +125,7 @@ which blender
 # 1) 解压
 Expand-Archive -Path "$env:TEMP\blender-mcp.zip" -DestinationPath "$env:TEMP\blender-mcp" -Force
 # 2) 装进 profile（自动写 dependencies 与 dsh.profile.bundles）
-& "<DSH 安装目录>\resources\runtime\cli\bin\dsh.cmd" plugin --profile <profile名> add file:"$env:TEMP\blender-mcp\blender-mcp-1.2.3"
+& "<DSH 安装目录>\resources\runtime\cli\bin\dsh.cmd" plugin --profile <profile名> add file:"$env:TEMP\blender-mcp\blender-mcp-1.2.4"
 ```
 
 `<DSH 安装目录>` = `DeepSeek Harness.exe` 所在目录（例如 `D:\dsh`）；`<profile名>` = `DSH_PROFILE_DIR` 的最后一段（`D:\DSHData\profiles\desktop` → `desktop`）。
@@ -151,6 +152,14 @@ Expand-Archive -Path "$env:TEMP\blender-mcp.zip" -DestinationPath "$env:TEMP\ble
 它同样调用 DSH 自带的 pnpm —— **不要依赖系统的 `pnpm` 命令，普通机器上没有**（实测干净环境 `Get-Command pnpm` 直接报缺失，照文档写 `pnpm install` 会失败）。
 
 **方式 D：开发者 link**（源码已在本机，如 `git clone` 场景）：dependencies 写 `"@local/blender-mcp": "link:D:/绝对路径/blender-mcp"`，其余同 C。
+
+### 2.2.1 服务器会随 DSH 自动启动
+
+装好本包之后，`@local/ptc-model-check` 带一个 profile 级监督插件（`ptc-blender-supervisor`）：
+**DSH 启动时**如果发现 8765 没在监听，会自动拉起 `server.mjs` 并等端口就绪，再让 MCP 客户端去连。
+这样就不必手动开 `start-server.bat`，也避免「客户端先连、服务器后到」导致的长期断连。
+
+排查问题时看日志里有 `[ptc-supervisor]` 前缀的那几行。
 
 ### 2.3 重启
 
