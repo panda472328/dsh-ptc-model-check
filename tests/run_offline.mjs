@@ -13,7 +13,7 @@ const names = [
   'verify_research_gate', 'verify_research_quality', 'verify_exploratory_research', 'verify_source_selection', 'verify_cdp_adapter',
   'verify_independent_context', 'verify_delete_guard', 'verify_deleted_tool', 'verify_negzero',
   'verify_mcp_url_routing', 'verify_refstate_not_selfpoisoned', 'verify_material_style_review',
-  'verify_view_checks', 'verify_env_install_guide', 'verify_framing_focus', 'verify_bridge_guard',
+  'verify_view_checks', 'verify_env_install_guide', 'verify_framing_focus', 'verify_bridge_guard', 'verify_report_budget',
 ]
 let failures = 0
 for (const name of names) {

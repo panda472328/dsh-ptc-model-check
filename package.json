@@ -1,6 +1,6 @@
 {
   "name": "@local/ptc-model-check",
-  "version": "2.30.0",
+  "version": "2.30.1",
   "private": true,
   "description": "场景建模特调：让 DeepSeek v4.1 (1017) 在场景建模上产出作品级结果——完整、耐看、可直接交付。",
   "type": "module",
