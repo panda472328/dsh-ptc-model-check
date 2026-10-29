@@ -5,7 +5,7 @@
  */
 import assert from 'node:assert/strict'
 import { readFileSync } from 'node:fs'
-import { isGroundLikeGroup, limitDeep } from '../lib/tools.mjs'
+import { isGroundLikeGroup, limitDeep, fitPayload } from '../lib/tools.mjs'
 
 console.log('=== 1. 地面层识别 ===')
 /* 35 的街道环境：140m 见方、几米高 */
@@ -52,6 +52,36 @@ console.log('\n=== 2. 结构化负载截断 ===')
 }
 console.log('  ✓ 大对象压缩到 1/3 以下、形状与计数保留')
 
+
+console.log('\n=== 2b. 总量预算：按「少量条目 × 长文本」也压得住 ===')
+{
+  /* 36 的真实形状：5 组，每组内 10 条 internalItems，每条带 300 字 observation；
+   * 按条数限流完全不够——条数没超，单条很长。 */
+  const mkPair = (i) => ({
+    a: 'PART_' + i, b: 'PART_' + (i + 1),
+    observation: '穿出，估计深度 0.5，' + 'x'.repeat(260),
+    next: '观察两件的接合处和场景中的相对位置，判断是否符合预期连接；', 
+  })
+  const payload = {
+    kind: 'loop', verdict: 'continue', pass: false,
+    lines: ['报告正文'],
+    hierarchy: { pairs: Array.from({ length: 40 }, (_, i) => ({ groups: ['A', 'B'], contacts: mkPair(i), collisions: mkPair(i) })) },
+    groups: Array.from({ length: 5 }, (_, g) => ({ name: 'G' + g, parts: Array.from({ length: 354 }, (_, i) => 'p' + i), internalItems: Array.from({ length: 10 }, (_, i) => mkPair(i)) })),
+    interference: { crossGroup: Array.from({ length: 30 }, (_, i) => mkPair(i)) },
+    isolation: { items: Array.from({ length: 30 }, (_, i) => mkPair(i)) },
+    perMeshImages: [{ object: 'G0', view: 'front' }],
+  }
+  const before = JSON.stringify(payload).length
+  const out = fitPayload(payload)
+  const after = JSON.stringify(out).length
+  console.log('  ' + before + ' → ' + after + ' 字符（' + Math.round(after / before * 100) + '%）')
+  assert.ok(after <= 20000, '必须压到 20K 预算内，实际 ' + after)
+  assert.equal(out.kind, 'loop', '关键字段必须保留')
+  assert.equal(out.verdict, 'continue')
+  assert.ok(Array.isArray(out.lines), '报告正文不能被压')
+  assert.ok(out.perMeshImages, 'perMeshImages 必须保留（投影器要附图片）')
+}
+console.log('  ✓ 18 万级负载压到 2 万以内，关键字段与图片清单完好')
 console.log('\n=== 3. 接线：渲染策略与门禁 ===')
 {
   const t = readFileSync(new URL('../lib/tools.mjs', import.meta.url), 'utf8')
@@ -63,6 +93,7 @@ console.log('\n=== 3. 接线：渲染策略与门禁 ===')
   assert.match(t, /hierarchy: limitDeep\(hierarchy/, 'loop 返回的 hierarchy 要截断')
   assert.match(t, /problemCount: each\.problems\.length/, 'perMesh 要保留总数')
   assert.match(t, /partsTotal: g\.parts\.length/, 'groups.parts 要保留总数')
+  assert.match(t, /return fitPayload\(value\)/, 'loop 返回值必须过总预算')
 
   const live = readFileSync(new URL('../lib/adapters/live.mjs', import.meta.url), 'utf8')
   assert.match(live, /hideOthers: opts\.hideOthers !== false/, '底层要支持按组关闭隔离')
